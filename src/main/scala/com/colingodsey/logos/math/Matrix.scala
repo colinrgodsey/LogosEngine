@@ -59,7 +59,7 @@ trait MatrixFactory[+T <: Matrix] {
     //def apply(other: Matrix): T = if(other.defaultFactory == this)
     //    other.asInstanceOf[T] else apply(other.iterator.toSeq: _*)
 
-    def apply(trans: AffineTransform): T
+    //def apply(trans: AffineTransform): T
     //def apply(): T
 
     //type Type = T
@@ -90,7 +90,7 @@ object Matrix3x2 {
 
     object Immutable extends MatrixFactory[Immutable] {
         // def apply(vals: Double*): Matrix3x2 = ???
-        def apply(trans: AffineTransform): Immutable = new Immutable {
+        private[Matrix3x2] def apply(trans: AffineTransform): Immutable = new Immutable {
             protected val matrix = trans
         }
 
@@ -122,10 +122,10 @@ object Matrix3x2 {
         private[Matrix3x2] def seal: Unit = _sealed = true
         def isSealed = _sealed
 
-        def apply(trans: AffineTransform) = {
+        /*def setTransform(trans: AffineTransform) = {
             matrix = trans
             this
-        }
+        }*/
     }
 
     object Mutable {
@@ -158,7 +158,8 @@ object Matrix3x2 {
             matrix.rotate(rads)
         }
 
-        def >>= (rads: Double, point: Point2D) {
+        def >>= (radPoint: (Double, Point2D)) {
+            val (rads, point) = radPoint
             checkSeal
             matrix.rotate(rads, point.x, point.y)
         }
@@ -182,7 +183,7 @@ object Matrix3x2 {
             Matrix3x2.Immutable(cp)
         }
 
-        def *( other: Matrix3x2) = {
+        def * (other: Matrix3x2) = {
             val cp = matrixCopy
             cp.concatenate(other.getMatrix)
             Matrix3x2.Immutable(cp)
@@ -194,7 +195,8 @@ object Matrix3x2 {
             Matrix3x2.Immutable(cp)
         }
 
-        def >> (rads: Double, point: Point2D) = {
+        def >> (radPoint: (Double, Point2D)) = {
+            val (rads, point) = radPoint
             val cp = matrixCopy
             cp.rotate(rads, point.x, point.y)
             Matrix3x2.Immutable(cp)

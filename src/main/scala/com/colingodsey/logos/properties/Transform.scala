@@ -16,7 +16,7 @@ limitations under the License.
 
 package com.colingodsey.logos.properties
 
-import com.colingodsey.logos.math.{Matrix3x2, Types2D, Core}
+import com.colingodsey.logos.math.{Matrix3x2, Types2D, Core => MCore}
 import com.colingodsey.logos.display.Core._
 
 trait Position extends Property {
